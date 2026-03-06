@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Hotel Billing System{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Dashboard</h2>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🏨</div>
+            <div class="stat-info">
+                <h3>{{ total_rooms }}</h3>
+                <p>Total Rooms</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <h3>{{ occupied_rooms }}</h3>
+                <p>Occupied Rooms</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🆓</div>
+            <div class="stat-info">
+                <h3>{{ available_rooms }}</h3>
+                <p>Available Rooms</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+                <h3>{{ active_bookings|length }}</h3>
+                <p>Active Bookings</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Active Bookings</h3>
+        {% if active_bookings %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Guest Name</th>
+                        <th>Phone</th>
+                        <th>Room</th>
+                        <th>Type</th>
+                        <th>Check-In</th>
+                        <th>Guests</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in active_bookings %}
+                    <tr>
+                        <td>#{{ booking.booking_id }}</td>
+                        <td>{{ booking.first_name }} {{ booking.last_name }}</td>
+                        <td>{{ booking.phone }}</td>
+                        <td>{{ booking.room_number }}</td>
+                        <td>{{ booking.room_type }}</td>
+                        <td>{{ booking.check_in_date }}</td>
+                        <td>{{ booking.number_of_guests }}</td>
+                        <td>
+                            <a href="{{ url_for('booking_details', booking_id=booking.booking_id) }}" class="btn btn-small btn-primary">View</a>
+                            <a href="{{ url_for('add_service', booking_id=booking.booking_id) }}" class="btn btn-small btn-secondary">Add Service</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-data">No active bookings at the moment.</p>
+        {% endif %}
+    </div>
+
+    <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-buttons">
+            <a href="{{ url_for('checkin') }}" class="btn btn-success">New Check-In</a>
+            <a href="{{ url_for('checkout') }}" class="btn btn-warning">Check-Out</a>
+            <a href="{{ url_for('rooms') }}" class="btn btn-info">View Rooms</a>
+            <a href="{{ url_for('bills') }}" class="btn btn-primary">View Bills</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice #{{ bill.bill_id }} - Hotel Billing System{% endblock %}
+
+{% block content %}
+<div class="invoice-page">
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div class="hotel-info">
+                <h1>Grand Hotel</h1>
+                <p>123 Main Street, City Center</p>
+                <p>Phone: +91 1234567890 | Email: info@grandhotel.com</p>
+                <p>GSTIN: 12ABCDE3456F1Z5</p>
+            </div>
+            <div class="invoice-title">
+                <h2>INVOICE</h2>
+                <p><strong>Invoice #:</strong> {{ bill.bill_id }}</p>
+                <p><strong>Date:</strong> {{ bill.bill_date }}</p>
+            </div>
+        </div>
+        
+        <div class="invoice-details">
+            <div class="customer-details">
+                <h3>Customer Details</h3>
+                <p><strong>Name:</strong> {{ bill.first_name }} {{ bill.last_name }}</p>
+                <p><strong>Email:</strong> {{ bill.email or 'N/A' }}</p>
+                <p><strong>Phone:</strong> {{ bill.phone }}</p>
+                <p><strong>Address:</strong> {{ bill.address or 'N/A' }}</p>
+            </div>
+            
+            <div class="booking-details">
+                <h3>Booking Details</h3>
+                <p><strong>Booking ID:</strong> #{{ bill.booking_id }}</p>
+                <p><strong>Room:</strong> {{ bill.room_number }} - {{ bill.room_type }}</p>
+                <p><strong>Check-In:</strong> {{ bill.check_in_date }}</p>
+                <p><strong>Check-Out:</strong> {{ bill.check_out_date }}</p>
+                <p><strong>Duration:</strong> {{ nights }} {% if nights == 1 %}Night{% else %}Nights{% endif %}</p>
+            </div>
+        </div>
+        
+        <div class="invoice-items">
+            <h3>Charges Breakdown</h3>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Per Unit</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #f9f9f9; font-weight: bold;">
+                        <td>{{ bill.room_type }} - Room {{ bill.room_number }} ({{ nights }} {% if nights == 1 %}Night{% else %}Nights{% endif %} × {{ bill.number_of_guests }} guests)</td>
+                        <td>{{ nights }} night(s) ×</td>
+                        <td>₹{{ "%.2f"|format(bill.price_per_night) }}/person/night</td>
+                        <td>₹{{ "%.2f"|format(bill.room_charges) }}</td>
+                    </tr>
+                    {% if services %}
+                    {% for service in services %}
+                    <tr>
+                        <td>{{ service.service_name }}</td>
+                        <td>{{ service.quantity }}</td>
+                        <td>₹{{ "%.2f"|format(service.service_price) }}</td>
+                        <td>₹{{ "%.2f"|format(service.service_price * service.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="invoice-summary">
+            <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>₹{{ "%.2f"|format(bill.room_charges + bill.service_charges) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (12% GST):</span>
+                <span>₹{{ "%.2f"|format(bill.tax_amount) }}</span>
+            </div>
+            {% if bill.discount > 0 %}
+            <div class="summary-row">
+                <span>Discount:</span>
+                <span>-₹{{ "%.2f"|format(bill.discount) }}</span>
+            </div>
+            {% endif %}
+            <div class="summary-row total">
+                <span>Total Amount:</span>
+                <span>₹{{ "%.2f"|format(bill.total_amount) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Payment Method:</span>
+                <span>{{ bill.payment_method }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Payment Status:</span>
+                <span class="status-badge status-paid">{{ bill.payment_status }}</span>
+            </div>
+        </div>
+        
+        <div class="invoice-footer">
+            <p class="thank-you">Thank you for choosing Grand Hotel!</p>
+            <p class="terms">Terms & Conditions: Payment is due upon receipt. All charges are non-refundable.</p>
+        </div>
+        
+        <div class="invoice-actions no-print">
+            <button onclick="window.print()" class="btn btn-primary">Print Invoice</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

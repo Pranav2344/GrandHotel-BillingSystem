@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Rooms - Hotel Billing System{% endblock %}
+
+{% block content %}
+<div class="rooms-page">
+    <h2>All Rooms</h2>
+    
+    <div class="rooms-grid">
+        {% for room in rooms %}
+        <div class="room-card {% if room.status == 'Occupied' %}occupied{% endif %}">
+            <div class="room-header">
+                <h3>Room {{ room.room_number }}</h3>
+                <span class="status-badge status-{{ room.status|lower }}">{{ room.status }}</span>
+            </div>
+            <div class="room-body">
+                <p class="room-type">{{ room.room_type }}</p>
+                <p class="room-description">{{ room.description }}</p>
+                <div class="room-details">
+                    <div class="detail">
+                        <span class="label">Capacity:</span>
+                        <span class="value">{{ room.capacity }} {% if room.capacity == 1 %}Person{% else %}People{% endif %}</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Price:</span>
+                        <span class="value price">₹{{ "%.2f"|format(room.price_per_night) }}/night</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

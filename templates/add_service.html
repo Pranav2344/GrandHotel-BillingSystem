@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Add Service - Hotel Billing System{% endblock %}
+
+{% block content %}
+<div class="add-service-page">
+    <h2>Add Service to Booking #{{ booking.booking_id }}</h2>
+    
+    <div class="booking-info">
+        <p><strong>Guest:</strong> {{ booking.first_name }} {{ booking.last_name }}</p>
+        <p><strong>Room:</strong> {{ booking.room_number }} - {{ booking.room_type }}</p>
+    </div>
+    
+    <form method="POST" class="service-form">
+        <div class="form-group">
+            <label for="service_id">Select Service *</label>
+            <select id="service_id" name="service_id" required onchange="updatePrice()">
+                <option value="">Choose a service</option>
+                {% for service in services %}
+                <option value="{{ service.service_id }}" data-price="{{ service.service_price }}">
+                    {{ service.service_name }} - ₹{{ "%.2f"|format(service.service_price) }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="quantity">Quantity *</label>
+            <input type="number" id="quantity" name="quantity" min="1" value="1" required onchange="updatePrice()">
+        </div>
+        
+        <div id="pricePreview" class="price-preview" style="display:none;">
+            <p><strong>Total:</strong> <span id="totalPrice">₹0.00</span></p>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Add Service</button>
+            <a href="{{ url_for('booking_details', booking_id=booking.booking_id) }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updatePrice() {
+    const select = document.getElementById('service_id');
+    const quantity = document.getElementById('quantity').value;
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (selectedOption.value && quantity > 0) {
+        const price = parseFloat(selectedOption.dataset.price);
+        const total = price * quantity;
+        document.getElementById('totalPrice').textContent = '₹' + total.toFixed(2);
+        document.getElementById('pricePreview').style.display = 'block';
+    } else {
+        document.getElementById('pricePreview').style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
