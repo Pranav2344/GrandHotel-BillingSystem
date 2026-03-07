@@ -1,71 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Booking Details - Hotel Billing System{% endblock %}
+{% block title %}Booking #{{ booking.booking_id }} - Hotel Billing System{% endblock %}
 
 {% block content %}
-<div class="booking-details-page">
-    <h2>Booking Details - #{{ booking.booking_id }}</h2>
+<div class="section">
+    <h2 style="margin-bottom: 2rem;">Booking #{{ booking.booking_id }}</h2>
     
-    <div class="details-grid">
-        <div class="details-card">
-            <h3>Guest Information</h3>
-            <div class="detail-row">
-                <span class="label">Name:</span>
-                <span class="value">{{ booking.first_name }} {{ booking.last_name }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Email:</span>
-                <span class="value">{{ booking.email or 'N/A' }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Phone:</span>
-                <span class="value">{{ booking.phone }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">ID Proof:</span>
-                <span class="value">{{ booking.id_proof_type }} - {{ booking.id_proof_number }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Address:</span>
-                <span class="value">{{ booking.address or 'N/A' }}</span>
-            </div>
+    <!-- Guest & Room Info -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+        <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Guest Information</h3>
+            <p style="margin: 1rem 0; font-size: 1.1rem;"><strong>{{ booking.first_name }} {{ booking.last_name }}</strong></p>
+            <p style="margin: 0.75rem 0;"><strong>Email:</strong> {{ booking.email or 'No email' }}</p>
+            <p style="margin: 0.75rem 0;"><strong>Phone:</strong> {{ booking.phone }}</p>
+            <p style="margin: 0.75rem 0;"><strong>ID Type:</strong> {{ booking.id_proof_type }}</p>
+            {% if booking.address %}
+            <p style="margin: 0.75rem 0;"><strong>Address:</strong> {{ booking.address }}</p>
+            {% endif %}
         </div>
         
-        <div class="details-card">
-            <h3>Room & Booking Info</h3>
-            <div class="detail-row">
-                <span class="label">Room:</span>
-                <span class="value">{{ booking.room_number }} - {{ booking.room_type }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Price per Night:</span>
-                <span class="value">₹{{ "%.2f"|format(booking.price_per_night) }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Check-In Date:</span>
-                <span class="value">{{ booking.check_in_date }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Number of Guests:</span>
-                <span class="value">{{ booking.number_of_guests }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="label">Status:</span>
-                <span class="value"><span class="status-badge status-{{ booking.booking_status|lower }}">{{ booking.booking_status }}</span></span>
-            </div>
-            {% if booking.special_requests %}
-            <div class="detail-row">
-                <span class="label">Special Requests:</span>
-                <span class="value">{{ booking.special_requests }}</span>
-            </div>
-            {% endif %}
+        <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Room Information</h3>
+            <p style="margin: 1rem 0; font-size: 1.1rem;"><strong>{{ booking.room_type }}</strong></p>
+            <p style="margin: 0.75rem 0;">Room Number: {{ booking.room_number }}</p>
+            <p style="margin: 0.75rem 0;">Price: ₹{{ "%.2f"|format(booking.price_per_night) }} per person/night</p>
+            <p style="margin: 0.75rem 0;">Check-in: {{ booking.check_in_date }}</p>
+            <p style="margin: 0.75rem 0;">Guests: {{ booking.number_of_guests }}</p>
+            <p style="margin: 0.75rem 0;">Status: <span class="status-badge status-{{ booking.booking_status|lower }}">{{ booking.booking_status }}</span></p>
         </div>
     </div>
     
-    <div class="services-section">
-        <div class="section-header">
-            <h3>Services Availed</h3>
-            <a href="{{ url_for('add_service', booking_id=booking.booking_id) }}" class="btn btn-small btn-success">Add Service</a>
+    {% if booking.special_requests %}
+    <div style="background: rgba(99, 102, 241, 0.05); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+        <h4 style="margin-bottom: 0.75rem;">Special Requests</h4>
+        <p style="margin: 0;">{{ booking.special_requests }}</p>
+    </div>
+    {% endif %}
+    
+    <!-- Services Section -->
+    <div style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3>Services</h3>
+            <a href="{{ url_for('add_service', booking_id=booking.booking_id) }}" class="btn btn-success">Add Service</a>
         </div>
         
         {% if services %}
@@ -76,7 +52,7 @@
                     <th>Date</th>
                     <th>Quantity</th>
                     <th>Price</th>
-                    <th>Total</th>
+                    <th style="text-align: right;">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,38 +62,50 @@
                     <td>{{ service.service_date }}</td>
                     <td>{{ service.quantity }}</td>
                     <td>₹{{ "%.2f"|format(service.service_price) }}</td>
-                    <td>₹{{ "%.2f"|format(service.service_price * service.quantity) }}</td>
+                    <td style="text-align: right;">₹{{ "%.2f"|format(service.service_price * service.quantity) }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <p class="no-data">No services added yet.</p>
+        <p style="text-align: center; padding: 2rem; color: #64748b; background: #f8fafc; border-radius: 10px;">No services added yet</p>
         {% endif %}
     </div>
     
-    <div class="current-charges">
-        <h3>Current Charges</h3>
-        <div class="charge-row">
-            <span><strong>Number of Guests:</strong></span>
-            <span>{{ booking.number_of_guests }}</span>
+    <!-- Current Charges -->
+    <div style="max-width: 500px; margin: 0 auto 3rem;">
+        <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; text-align: center;">Current Charges</h3>
+            
+            <div style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0;">
+                <p style="margin: 0.5rem 0; color: #64748b; font-size: 0.9rem;">
+                    {{ booking.number_of_guests }} guest(s) × ₹{{ "%.2f"|format(booking.price_per_night) }}/person/night × {{ days }} day(s)
+                </p>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e2e8f0;">
+                <span>Room Charges</span>
+                <span style="font-weight: 600;">₹{{ "%.2f"|format(room_charges) }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e2e8f0;">
+                <span>Service Charges</span>
+                <span>₹{{ "%.2f"|format(service_charges) }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; padding: 1.5rem 0; font-size: 1.25rem; font-weight: 700; color: var(--primary-color);">
+                <span>Current Total</span>
+                <span>₹{{ "%.2f"|format(room_charges + service_charges) }}</span>
+            </div>
+            
+            <p style="text-align: center; color: #64748b; font-size: 0.875rem; margin-top: 1rem;">
+                * Tax will be calculated at checkout
+            </p>
         </div>
-        <div class="charge-row">
-            <span><strong>Room Charges (₹{{ "%.2f"|format(booking.price_per_night) }}/person/night × {{ days }} day{{ 's' if days != 1 else '' }} × {{ booking.number_of_guests }} guest{{ 's' if booking.number_of_guests != 1 else '' }}):</strong></span>
-            <span style="color: var(--primary-color); font-weight: bold;">₹{{ "%.2f"|format(room_charges) }}</span>
-        </div>
-        <div class="charge-row">
-            <span>Service Charges:</span>
-            <span>₹{{ "%.2f"|format(service_charges) }}</span>
-        </div>
-        <div class="charge-row total">
-            <span>Current Total:</span>
-            <span>₹{{ "%.2f"|format(room_charges + service_charges) }}</span>
-        </div>
-        <p class="note">* Price shown is ₹{{ "%.2f"|format(booking.price_per_night) }} per person per night. Tax will be calculated at checkout</p>
     </div>
     
-    <div class="page-actions">
+    <!-- Actions -->
+    <div style="text-align: center; margin-top: 2rem;">
         <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 </div>

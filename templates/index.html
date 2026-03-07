@@ -4,32 +4,54 @@
 
 {% block content %}
 <div class="dashboard">
-    <h2>Dashboard</h2>
+    <h2>Dashboard Overview</h2>
     
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">🏨</div>
+            <div class="stat-icon stat-icon-rooms" aria-hidden="true">
+                <svg class="stat-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 21V7.5C4 6.67 4.67 6 5.5 6H9V4.5C9 3.67 9.67 3 10.5 3H13.5C14.33 3 15 3.67 15 4.5V6H18.5C19.33 6 20 6.67 20 7.5V21" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 21V16.5C9 15.67 9.67 15 10.5 15H13.5C14.33 15 15 15.67 15 16.5V21" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7.5 9.5H7.51M12 9.5H12.01M16.5 9.5H16.51M7.5 12.5H7.51M12 12.5H12.01M16.5 12.5H16.51" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+            </div>
             <div class="stat-info">
                 <h3>{{ total_rooms }}</h3>
                 <p>Total Rooms</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">✅</div>
+            <div class="stat-icon stat-icon-occupied" aria-hidden="true">
+                <svg class="stat-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 12L10.5 15.5L17 9" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+            </div>
             <div class="stat-info">
                 <h3>{{ occupied_rooms }}</h3>
                 <p>Occupied Rooms</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">🆓</div>
+            <div class="stat-icon stat-icon-available" aria-hidden="true">
+                <svg class="stat-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3V21" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                    <path d="M6 6H15.5C17.43 6 19 7.57 19 9.5V14.5C19 16.43 17.43 18 15.5 18H6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 12H4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                </svg>
+            </div>
             <div class="stat-info">
                 <h3>{{ available_rooms }}</h3>
                 <p>Available Rooms</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">📋</div>
+            <div class="stat-icon stat-icon-bookings" aria-hidden="true">
+                <svg class="stat-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="4" width="12" height="16" rx="2" stroke="currentColor" stroke-width="1.9"/>
+                    <path d="M9 9H15M9 12H15M9 15H13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                </svg>
+            </div>
             <div class="stat-info">
                 <h3>{{ active_bookings|length }}</h3>
                 <p>Active Bookings</p>
@@ -57,15 +79,15 @@
                 <tbody>
                     {% for booking in active_bookings %}
                     <tr>
-                        <td>#{{ booking.booking_id }}</td>
-                        <td>{{ booking.first_name }} {{ booking.last_name }}</td>
+                        <td><strong style="color: var(--primary-color);">#{{ booking.booking_id }}</strong></td>
+                        <td><strong>{{ booking.first_name }} {{ booking.last_name }}</strong></td>
                         <td>{{ booking.phone }}</td>
-                        <td>{{ booking.room_number }}</td>
+                        <td><span class="status-badge status-active">Room {{ booking.room_number }}</span></td>
                         <td>{{ booking.room_type }}</td>
                         <td>{{ booking.check_in_date }}</td>
                         <td>{{ booking.number_of_guests }}</td>
                         <td>
-                            <a href="{{ url_for('booking_details', booking_id=booking.booking_id) }}" class="btn btn-small btn-primary">View</a>
+                            <a href="{{ url_for('booking_details', booking_id=booking.booking_id) }}" class="btn btn-small btn-primary">View Details</a>
                             <a href="{{ url_for('add_service', booking_id=booking.booking_id) }}" class="btn btn-small btn-secondary">Add Service</a>
                         </td>
                     </tr>
@@ -81,10 +103,33 @@
     <div class="quick-actions">
         <h3>Quick Actions</h3>
         <div class="action-buttons">
-            <a href="{{ url_for('checkin') }}" class="btn btn-success">New Check-In</a>
-            <a href="{{ url_for('checkout') }}" class="btn btn-warning">Check-Out</a>
-            <a href="{{ url_for('rooms') }}" class="btn btn-info">View Rooms</a>
-            <a href="{{ url_for('bills') }}" class="btn btn-primary">View Bills</a>
+            <a href="{{ url_for('checkin') }}" class="btn btn-success">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+                New Check-In
+            </a>
+            <a href="{{ url_for('checkout') }}" class="btn btn-warning">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M7 12L10.5 15.5L17 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Check-Out
+            </a>
+            <a href="{{ url_for('rooms') }}" class="btn btn-info">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M4 21V7.5C4 6.67 4.67 6 5.5 6H9V4.5C9 3.67 9.67 3 10.5 3H13.5C14.33 3 15 3.67 15 4.5V6H18.5C19.33 6 20 6.67 20 7.5V21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 21V16.5C9 15.67 9.67 15 10.5 15H13.5C14.33 15 15 15.67 15 16.5V21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                View Rooms
+            </a>
+            <a href="{{ url_for('bills') }}" class="btn btn-primary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.9"/>
+                    <path d="M3 10H21" stroke="currentColor" stroke-width="1.9"/>
+                    <path d="M7 14H11" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+                </svg>
+                View Bills
+            </a>
         </div>
     </div>
 </div>

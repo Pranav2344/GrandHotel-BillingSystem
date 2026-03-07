@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from datetime import datetime, date
 import database as db
+import os
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here-change-in-production'
+app.secret_key = os.environ.get('SECRET_KEY', 'c8f9a2b6e4d1c7f5a3b8e9d2c6f4a1b7e5d3c9f2a6b4e8d1c7f5a3b9e2d6c4f1')
 app.config['JSON_SORT_KEYS'] = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 3600  # Cache static files for 1 hour
 
@@ -93,7 +94,7 @@ def checkin():
             booking_id = db.create_booking(customer_id, room_id, check_in_date, 
                                           number_of_guests, special_requests)
             
-            flash(f'✓ Check-in successful! Booking ID: {booking_id}', 'success')
+            flash(f'Check-in successful! Booking ID: {booking_id}', 'success')
             return redirect(url_for('index'))
         except Exception as e:
             flash(f'Error during check-in: {str(e)}', 'error')

@@ -232,7 +232,7 @@ def get_bill_by_id(bill_id):
     conn = get_db_connection()
     bill = conn.execute('''
         SELECT b.*, bk.booking_id, bk.check_in_date, bk.check_out_date, bk.number_of_guests,
-               c.first_name, c.last_name, c.email, c.phone, c.address,
+               c.first_name, c.last_name, c.email, c.phone, c.address, c.id_proof_type, c.id_proof_number,
                r.room_number, r.room_type, r.price_per_night
         FROM bills b
         JOIN bookings bk ON b.booking_id = bk.booking_id

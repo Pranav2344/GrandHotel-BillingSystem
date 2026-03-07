@@ -4,7 +4,13 @@
 
 {% block content %}
 <div class="rooms-page">
-    <h2>All Rooms</h2>
+    <h2>Hotel Room Catalog</h2>
+    
+    <div class="info-box">
+        <h4>Room Status Guide</h4>
+        <p><strong>Available:</strong> Ready for booking and check-in</p>
+        <p><strong>Occupied:</strong> Currently reserved by guests</p>
+    </div>
     
     <div class="rooms-grid">
         {% for room in rooms %}

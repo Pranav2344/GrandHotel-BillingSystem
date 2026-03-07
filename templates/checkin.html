@@ -6,28 +6,28 @@
 <div class="checkin-page">
     <h2>Guest Check-In</h2>
     
-    <form method="POST" class="checkin-form">
+    <form method="POST" class="checkin-form" onsubmit="return validateForm('checkinForm')" id="checkinForm">
         <div class="form-section">
             <h3>Guest Information</h3>
             <div class="form-row">
                 <div class="form-group">
                     <label for="first_name">First Name *</label>
-                    <input type="text" id="first_name" name="first_name" required>
+                    <input type="text" id="first_name" name="first_name" required placeholder="Enter first name">
                 </div>
                 <div class="form-group">
                     <label for="last_name">Last Name *</label>
-                    <input type="text" id="last_name" name="last_name" required>
+                    <input type="text" id="last_name" name="last_name" required placeholder="Enter last name">
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email">
+                    <input type="email" id="email" name="email" placeholder="guest@example.com" onchange="validateEmail(this)">
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone *</label>
-                    <input type="tel" id="phone" name="phone" required>
+                    <input type="tel" id="phone" name="phone" required placeholder="10-digit mobile number" onchange="validatePhone(this)">
                 </div>
             </div>
             
@@ -45,13 +45,13 @@
                 </div>
                 <div class="form-group">
                     <label for="id_proof_number">ID Proof Number *</label>
-                    <input type="text" id="id_proof_number" name="id_proof_number" required>
+                    <input type="text" id="id_proof_number" name="id_proof_number" required placeholder="Enter ID proof number">
                 </div>
             </div>
             
             <div class="form-group">
                 <label for="address">Address</label>
-                <textarea id="address" name="address" rows="3"></textarea>
+                <textarea id="address" name="address" rows="3" placeholder="Enter full address (optional)"></textarea>
             </div>
         </div>
         
@@ -71,8 +71,8 @@
                     <small id="capacityError" style="color: var(--danger-color); display: none; margin-top: 0.5rem;"></small>
                 </div>
                 <div class="form-group">
-                    <label for="number_of_guests">Number of Guests * <span id="capacityInfo"></span></label>
-                    <input type="number" id="number_of_guests" name="number_of_guests" min="1" required onchange="validateGuestCount()">
+                    <label for="number_of_guests">Number of Guests * <span id="capacityInfo" style="font-weight: normal; color: var(--secondary-color);"></span></label>
+                    <input type="number" id="number_of_guests" name="number_of_guests" min="1" required onchange="validateGuestCount()" placeholder="Enter number of guests">
                 </div>
             </div>
             
@@ -83,7 +83,7 @@
             
             <div class="form-group">
                 <label for="special_requests">Special Requests</label>
-                <textarea id="special_requests" name="special_requests" rows="3" placeholder="Any special requirements..."></textarea>
+                <textarea id="special_requests" name="special_requests" rows="3" placeholder="Any special requirements or requests..."></textarea>
             </div>
         </div>
         
@@ -150,7 +150,7 @@ function validateGuestCount() {
     
     if (guests > capacity) {
         capacityError.style.display = 'block';
-        capacityError.textContent = `⚠️ Room capacity is ${capacity}. You cannot enter more than ${capacity} guest(s).`;
+        capacityError.textContent = `Room capacity is ${capacity}. You cannot enter more than ${capacity} guest(s).`;
         guestInput.value = capacity;
         return false;
     } else if (guests < 1) {
